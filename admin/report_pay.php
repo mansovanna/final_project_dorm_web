@@ -1,8 +1,13 @@
 <?php
 session_start();
 require_once('../conn_db.php');
-include("../include/header.php");
 
+
+// Check if the user is not authenticated
+if (!isset($_SESSION["admin_username"])) {
+    header("Location: login.php");
+    exit();
+}
 // Check connection
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
@@ -111,6 +116,8 @@ if (!$countStmt->execute()) {
 $countResult = $countStmt->get_result();
 $totalRows = $countResult->fetch_assoc()['total'];
 $pages = ceil($totalRows / $limit);
+
+include("../include/header.php");
 ?>
 <!DOCTYPE html>
 <html lang="en">
