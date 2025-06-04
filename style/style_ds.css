@@ -1,0 +1,64 @@
+table{
+    border-collapse: collapse;
+    border-spacing: 0;
+    width: 100%;
+    /* border: 1px solid; */
+  
+   }
+   h2{
+    text-align: center;
+    font-family: KH Koulen;
+    text-shadow: 1px 0px 2px rgb(50, 55, 51);
+    font-size: 35px;
+   }
+   th,td{
+    text-align: left;
+    padding: 10px;
+    font-family:"khmer os siemreap";
+    height: 30px;
+    text-align: center;
+   }
+   th{
+    border: 1px solid black;
+    
+   }
+   tr:nth-child(even){
+    background-color: rgb(202, 202, 202);
+  
+   }
+   th{
+    background-color: rgb(36, 173, 103);
+    color: black(32, 29, 29, 0.081);
+   }
+   tr:nth-child(even):hover{
+    background-color: rgb(170, 170, 170);
+    color: white;
+  
+   }
+
+
+a {
+    text-decoration: none;
+    color: #fff;
+}
+
+a {
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+.table {
+    margin: auto;
+    width: 95%;
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}

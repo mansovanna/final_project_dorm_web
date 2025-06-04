@@ -1,0 +1,59 @@
+
+
+body {
+    font-family: 'Hanuman', sans-serif;
+    background-color: #f2f2f2;
+    margin: 0;
+    padding: 0;
+}
+
+.title {
+    text-align: center;
+    /* margin-top: 20px; */
+}
+
+.edit{
+    width: 50%;
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    
+}
+
+.edit {
+    margin-bottom: 15px;
+}
+
+.edit label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.edit input[type="text"], input[type="file"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.edit button[type="submit"] {
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.edit button[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+.edit img {
+    margin-top: 10px;
+    display: block;
+    margin-bottom: 15px;
+}

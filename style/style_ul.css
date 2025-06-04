@@ -1,0 +1,120 @@
+.background {
+    background-color: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    height: 430px;
+    width: 60%;
+    position: absolute;
+    left: 20%;
+    font-family: 'khmer os siemreap';
+}
+.table {
+    margin: auto;
+    width: 95%;
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+ h2 {
+    text-align: center;
+    font-size: 30px;
+    text-shadow: 1px 0px 2px rgb(50, 55, 51);
+    margin-bottom: 15px;
+}
+.id {
+    position: absolute;
+    margin-top: 90px;
+    left: 8%;
+}
+.id1 {
+    position: absolute;
+    margin-top: -3px;
+    left: 194%;
+    height: 35px;
+    width: 530%;
+}
+
+
+.latang {
+    position: absolute;
+    margin-top: 90px;
+    left: 53%;
+}
+.latang1 {
+    position: absolute;
+    margin-top: -3px;
+    left: 143%;
+    height: 35px;
+    width: 267%;
+}
+
+.phone {
+    position: absolute;
+    margin-top: 160px;
+    left: 4.60%;
+}
+.phone1 {
+    position: absolute;
+    margin-top: -3px;
+    left: 150%;
+    height: 35px;
+    width: 300%;
+}
+.Email{
+    position: absolute;
+    margin-top: 160px;
+    left: 58%;
+}
+.Email1 {
+    position: absolute;
+    margin-top: -3px;
+    left: 173%;
+    height: 35px;
+    width: 493%;
+}
+.container1 {
+    position: absolute;
+    left: 10%;
+    margin-top: 230px;
+}
+
+input[type="file"] {
+    margin-bottom: 10px;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #15871b;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 28%;
+    
+    
+}
+
+button:hover {
+    background-color: #116007;
+}
+.bt[type="file"] {
+    margin-bottom: 10px;
+}
+
+.bt {
+    padding: 10px 20px;
+    background-color: #15871b;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 15%;
+    position: absolute;
+    left: 72%;
+    
+}
+
+.bt:hover {
+    background-color: #116007;
+}

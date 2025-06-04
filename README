@@ -1,0 +1,49 @@
+Dorm Management System README
+
+
+Database Setup
+    1 Create the Database:
+
+    The system uses a MySQL database named dorm_ksit. You can create the database using the following SQL command:
+
+    2 CREATE DATABASE dorm_ksit;
+    Import the Database :
+
+    + Import the provided SQL dump file into your dorm_ksit database. If you're using phpMyAdmin, you can do this by:
+    - Opening phpMyAdmin.
+    - Selecting the dorm_ksit database.
+    - Going to the "Import" tab.
+    - Uploading the .sql file provided with this project.
+    
+<!-- Configure the Database Connection:
+
+Open the config.php (or similar configuration file) in your project.
+Update the database connection details as per your local environment (username, password, host). -->
+
+Accessing the System
+
+    Student Interface:
+
+    URL: http://localhost/dorm_ksit/
+    This is the main page where students can log in and access their dormitory-related information.
+
+    Student Login
+        1 Open the student login page at http://localhost/dorm_ksit/.
+        2 Enter your Student ID and Password to log in.
+
+        EX: 
+            ID: 123
+            Password: 123
+
+
+    Admin Interface:
+
+    URL: http://localhost/dorm_ksit/admin/login.php
+    This is the admin panel where the administrator can manage student data, room assignments, payments, and more.
+
+    Admin Login
+        1 Open the admin login page at http://localhost/dorm_ksit/admin/login.php.
+        2 Use the following credentials to log in as the admin:
+            Username: admin
+            Password: 123
+
