@@ -1,19 +1,16 @@
 <?php 
 
-header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: POST');
-header('Access-Control-Allow-Headers: Content-Type');
+use Providers\ApiHeader;
 
+require_once __DIR__ . './../providers/Headers.php';
+$header = new ApiHeader();
+$header->setHeaders();
 // Include database connection
 require_once '../conn_db.php';
 
 
-if($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    http_response_code(405);
-    echo json_encode(['success' => false, 'message' => 'Method Not Allowed']);
-    exit;
-}
+$header->checkMethod('POST');
+
 
 // request body from the client
 $input = json_decode(file_get_contents('php://input'), true);

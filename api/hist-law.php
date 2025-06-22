@@ -1,54 +1,61 @@
-<?php 
+<?php
 
-require_once __DIR__ . '/../providers/Headers.php';
-$apiHeader = new Providers\ApiHeader();
-
-$apiHeader->setHeaders();
-
-// Include database connection
 require_once '../conn_db.php';
+require_once __DIR__ . '/../providers/Headers.php';
+require_once __DIR__ . '/../providers/Service.php';
+require_once __DIR__ . '/../providers/Response.php';
+
+$apiHeader = new Providers\ApiHeader();
+$apiHeader->setHeaders();
+$service = new Providers\Service($conn);
+// Include database connection
+
 // Request user profile
 // check method
 $apiHeader->checkMethod('GET');
-// check authorization
-$apiHeader->checkAuthorization();
+
 // validate token
 // Check for Authorization header
 $headers = getallheaders();
-$token = $apiHeader->validateToken($headers['Authorization']);
-// If all checks pass, return user profile
-// check user token
-$token = $apiHeader->validateToken($headers['Authorization']);
-// select check user token
-$select_token = "SELECT * FROM tokens WHERE token = ?";
-$stmt = $conn->prepare($select_token);
-$stmt->bind_param("s", $token);
-$stmt->execute();
-$result = $stmt->get_result();
-if ($result->num_rows !== 1) {
-    http_response_code(401);
-    echo json_encode(['success' => false, 'message' => 'Invalid token']);
-    exit;
-}
-$token = $result->fetch_assoc();
-// Get user profile
-$select_user = "SELECT * FROM register WHERE student_id = ?";
-$stmt = $conn->prepare($select_user);
-$stmt->bind_param("s", $token['user_id']);
-$stmt->execute();
-$result = $stmt->get_result();
-if ($result->num_rows !== 1) {
-    http_response_code(404);
-    echo json_encode(['success' => false, 'message' => 'User not found']);
-    exit;
-}
-$user = $result->fetch_assoc();
-unset($user['password']);
+// check authorization
+$apiHeader->checkAuthorization();
 
-// Get history of law
-$select_history = "SELECT * FROM reques_alaw WHERE student_id = ?";
-$stmt = $conn->prepare($select_history);
-$stmt->bind_param("s", $token['user_id']);
+
+
+$token = $apiHeader->validateToken($headers['Authorization']);
+
+// If all checks pass, return user profile
+
+$result = $service->getUser();
+
+if (!$result) {
+    Response::json(
+        [
+            'status' => 401,
+            "message" => 'Token Expirces'
+        ],
+        401
+    );
+    exit;
+}
+
+$user = $service->user($result['user_id']);
+// Get client input
+$input = json_decode(file_get_contents('php://input'), true);
+
+
+$id_law = $_GET['id']?? null;
+
+
+if ($id_law) {
+    $select_history = "SELECT * FROM reques_alaw WHERE student_id = ? AND user_id = ?";
+    $stmt = $conn->prepare($select_history);
+    $stmt->bind_param("ss", $user['student_id'], $id_law);
+} else {
+    $select_history = "SELECT * FROM reques_alaw WHERE student_id = ?";
+    $stmt = $conn->prepare($select_history);
+    $stmt->bind_param("s", $user['student_id']);
+}
 $stmt->execute();
 $result = $stmt->get_result();
 if ($result->num_rows === 0) {
@@ -60,12 +67,14 @@ $history = $result->fetch_all(MYSQLI_ASSOC);
 
 
 // Prepare user profile data
-echo json_encode([
-    'success' => true,
-    'message' => 'User profile and history retrieved successfully',
-    // 'user' => $user,
-    'history' => $history
-]);
+echo Response::json(
+    [
+        // 'success' => true,
+        // 'message' => 'User profile and history retrieved successfully',
+        // 'user' => $user,
+        'history' => $history
+    ]
+);
 // Close the statement and connection
 $stmt->close();
 $conn->close();

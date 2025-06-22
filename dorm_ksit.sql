@@ -41,6 +41,8 @@ INSERT INTO `addbuilding` (`id`, `building_name`, `room_number`) VALUES
 (73, 'NT-M', 10),
 (74, 'ABW', 12);
 
+
+
 -- --------------------------------------------------------
 
 --
@@ -308,8 +310,12 @@ CREATE TABLE `tokens` (
   `id` int(11) NOT NULL,
   `token` varchar(64) NOT NULL,
   `expires` int(11) NOT NULL,
-  `user_id` varchar(255) NOT NULL
+  `user_id` varchar(255) NOT NULL,
+  FOREIGN KEY (user_id) REFERENCES register(user_id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
+
 
 --
 -- Dumping data for table `tokens`

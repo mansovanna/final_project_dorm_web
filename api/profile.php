@@ -1,56 +1,45 @@
 <?php
+require_once '../conn_db.php';
 require_once __DIR__ . '/../providers/Headers.php';
+require_once __DIR__ . '/../providers/Service.php';
+require_once __DIR__ . '/../providers/Response.php';
 
 $apiHeader = new Providers\ApiHeader();
 $apiHeader->setHeaders();
+$service = new Providers\Service($conn);
 // Include database connection
-
-require_once '../conn_db.php';
 
 // Request user profile
 // check method
 $apiHeader->checkMethod('GET');
 
-// check authorization
-$apiHeader->checkAuthorization();
-
 // validate token
 // Check for Authorization header
 $headers = getallheaders();
+// check authorization
+$apiHeader->checkAuthorization();
+
+
 
 $token = $apiHeader->validateToken($headers['Authorization']);
 
 // If all checks pass, return user profile
 
-// check user token
+$result =$service->getUser();
 
-$token = $apiHeader->validateToken($headers['Authorization']);
-
-// select check user token
-$select_token = "SELECT * FROM tokens WHERE token = ?";
-$stmt = $conn->prepare($select_token);
-$stmt->bind_param("s", $token);
-$stmt->execute();
-$result = $stmt->get_result();
-if ($result->num_rows !== 1) {
-    http_response_code(401);
-    echo json_encode(['success' => false, 'message' => 'Invalid token']);
-    exit;
+if(!$result){
+    Response::json(
+        [
+            'status'=> 401,
+            "message" => 'Token Expirces'
+        ],
+        401
+    );
+}else {
+    $user = $service->user($result['user_id']);
+    Response::json([
+        'status' => 200,
+        'message' =>"User Request success!",
+        'user' => $user,
+    ]);
 }
-$token = $result->fetch_assoc();
-// Get user profile
-$select_user = "SELECT * FROM register WHERE student_id = ?";
-$stmt = $conn->prepare($select_user);
-$stmt->bind_param("s", $token['user_id']);
-$stmt->execute();
-$result = $stmt->get_result();
-if ($result->num_rows !== 1) {
-    http_response_code(404);
-    echo json_encode(['success' => false, 'message' => 'User not found']);
-    exit;
-}
-$user = $result->fetch_assoc();
-unset($user['password']);
-// Prepare user profile data
-
-echo json_encode(['success' => true, 'message' => 'User profile retrieved successfully', 'user' => $user]);

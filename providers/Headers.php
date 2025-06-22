@@ -26,7 +26,7 @@ class ApiHeader
         $headers = getallheaders();
         if (!isset($headers['Authorization'])) {
             http_response_code(401);
-            echo json_encode(['success' => false, 'message' => 'Authorization header missing']);
+            echo json_encode(['success' => false, 'message' => 'Unautharization']);
             exit;
         }
     }
