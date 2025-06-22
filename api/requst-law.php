@@ -1,5 +1,7 @@
 <?php
 
+// use Providers\ApiHeader;
+// use Providers\Service;
 require_once '../conn_db.php';
 require_once __DIR__ . '/../providers/Headers.php';
 require_once __DIR__ . '/../providers/Service.php';
@@ -8,6 +10,8 @@ require_once __DIR__ . '/../providers/Response.php';
 $apiHeader = new Providers\ApiHeader();
 $apiHeader->setHeaders();
 $service = new Providers\Service($conn);
+
+
 // Include database connection
 
 // Request user profile
@@ -47,11 +51,11 @@ $user = $service->user($result['user_id']);
 $input = json_decode(file_get_contents('php://input'), true);
 
 if (empty($input)) {
-  
-    echo Response::json(
-        ['success' => false, 'message' => 'No Request data from client!'], 400
-    );
-    exit;
+
+   Response::json(
+       ['success' => false, 'message' => 'No Request data from client!'], 400
+   );
+   exit;
 }
 
 // Parse input
@@ -65,7 +69,7 @@ $status = "រងចាំ";
 
 // Basic validation
 if (!$first_date || !$end_date || !$reason) {
-    echo Response::json(
+    Response::json(
         ['success' => false, 'message' => 'Missing required fields'], 400
     );
     exit;
@@ -93,7 +97,7 @@ if ($stmt->execute()) {
         'status' => $status
     ];
 
-    echo Response::json(
+    Response::json(
         [
             'success' => true,
             'message' => "Leave request submitted successfully.",
@@ -102,7 +106,7 @@ if ($stmt->execute()) {
     );
 } else {
 
-    echo Response::json([
+    Response::json([
         'success' => false,
         'message' => "Database error: " . $stmt->error
     ], 500);

@@ -1,8 +1,11 @@
 <?php 
 
 use Providers\ApiHeader;
+// use Providers\Response;
 
 require_once __DIR__ . './../providers/Headers.php';
+require_once __DIR__ . './../providers/Providers.php';
+
 $header = new ApiHeader();
 $header->setHeaders();
 // Include database connection
@@ -16,16 +19,14 @@ $header->checkMethod('POST');
 $input = json_decode(file_get_contents('php://input'), true);
 
 if(empty($input)) {
-    http_response_code(400);
-    echo json_encode(['success' => false, 'message' => 'Student ID and password are required']);
+    echo Response::json(['success' => false, 'message' => 'Student ID and password are required'], 400);
     exit;
 }
 
 
 // Start login process
 if(!$conn){
-    http_response_code(500);
-    echo json_encode(['success' => false, 'message' => 'Database connection failed']);
+    echo Response::json(['success' => false, 'message' => 'Database connection failed'], 500);
     exit;
 }
 
