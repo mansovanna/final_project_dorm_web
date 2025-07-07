@@ -24,7 +24,7 @@ $history = mysqli_query($conn, "SELECT * FROM reques_alaw WHERE student_id = '{$
 </head>
 <body>
     <div class="container">
-        <div class="title mt-4 mb-3 text-center">
+        <div class="title mt-4 mb-3 text-left">
             <h3 style=" font-weight: bold;">ប្រវត្តិការសុំច្បាប់</h3>
         </div>
         <?php
@@ -37,7 +37,7 @@ $history = mysqli_query($conn, "SELECT * FROM reques_alaw WHERE student_id = '{$
             </div>
         <?php endif; ?>
 
-        <div class="table-responsive">
+        <div class="table-responsive p-3">
             <table class="table table-bordered">
                 <thead>
                     <tr>

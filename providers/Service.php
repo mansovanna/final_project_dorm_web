@@ -2,6 +2,8 @@
 
 namespace Providers;
 
+use Response;
+
 class Service
 {
     private $conn;
@@ -80,16 +82,18 @@ class Service
     public function token($user_id)
     {
         $token = bin2hex(random_bytes(32));
-        $expires = date('Y-m-d H:i:s', time() + 3600); // 1 hour later
+
+        // ⏳ Set expiration 1 year later
+        $expires = date('Y-m-d H:i:s', strtotime('+1 year'));
 
         // Clean up expired tokens
         $this->conn->query("DELETE FROM tokens WHERE expires_at < NOW()");
 
         $query = "
-            INSERT INTO tokens (token, expires_at, user_id)
-            VALUES (?, ?, ?)
-            ON DUPLICATE KEY UPDATE token = VALUES(token), expires_at = VALUES(expires_at)
-        ";
+        INSERT INTO tokens (token, expires_at, user_id)
+        VALUES (?, ?, ?)
+        ON DUPLICATE KEY UPDATE token = VALUES(token), expires_at = VALUES(expires_at)
+    ";
 
         $stmt = $this->conn->prepare($query);
         if (!$stmt) {
@@ -106,28 +110,71 @@ class Service
         return ['success' => true, 'token' => $token, 'expires_at' => $expires];
     }
 
+
+    public function getUser()
+    {
+        $headers = [];
+
+        if (function_exists('getallheaders')) {
+            $headers = getallheaders();
+        }
+
+        // Manually fetch Authorization if not present
+        if (!isset($headers['Authorization'])) {
+            if (isset($_SERVER['HTTP_AUTHORIZATION'])) {
+                $headers['Authorization'] = $_SERVER['HTTP_AUTHORIZATION'];
+            } elseif (isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])) {
+                $headers['Authorization'] = $_SERVER['REDIRECT_HTTP_AUTHORIZATION'];
+            }
+        }
+
+        // Debug headers
+        file_put_contents('headers_debug.txt', json_encode($headers, JSON_PRETTY_PRINT));
+
+        if (!isset($headers['Authorization'])) {
+            return Response::json([
+                'status' => 401,
+                'message' => 'Authorization header missing.'
+            ], 401);
+        }
+
+        [$type, $token] = explode(' ', $headers['Authorization'], 2);
+
+        if (strcasecmp($type, 'Bearer') !== 0 || empty($token)) {
+            return Response::json([
+                'status' => 401,
+                'message' => 'Invalid or missing Bearer token.'
+            ], 401);
+        }
+
+        return $this->validateToken(trim($token));
+    }
+
+
+
     public function validateToken($token)
     {
-        $token = trim($token); // Remove whitespace
-
         $query = "
-        SELECT 
-            tokens.token,
-            tokens.expires_at,
-            register.user_id,
-            register.student_id,
-            register.username,
-            register.img
-        FROM tokens
-        JOIN register ON tokens.user_id = register.user_id
-        WHERE tokens.token = ? AND tokens.expires_at <= NOW()
-    ";
+            SELECT 
+                tokens.token,
+                tokens.expires_at,
+                register.user_id,
+                register.student_id,
+                register.username,
+                register.img
+            FROM tokens
+            JOIN register ON tokens.user_id = register.user_id
+            WHERE tokens.token = ? AND tokens.expires_at >= NOW()
+        ";
 
         $stmt = $this->conn->prepare($query);
 
         if (!$stmt) {
             error_log("Prepare failed: " . $this->conn->error);
-            return false;
+            return Response::json([
+                'status' => 401,
+                'message' => 'Token validation failed.'
+            ], 401);
         }
 
         $stmt->bind_param("s", $token);
@@ -135,27 +182,16 @@ class Service
         $result = $stmt->get_result();
 
         if ($result && $result->num_rows === 1) {
-            return $result->fetch_assoc(); // Includes user + token info
+            return $result->fetch_assoc();
         }
 
-        return false;
+        return Response::json([
+            'status' => 401,
+            'message' => 'Token is invalid or expired.'
+        ], 401);
     }
 
 
-    public function getUser()
-    {
-        $headers = getallheaders();
-        if (!isset($headers['Authorization'])) {
-            return false;
-        }
-
-        [$type, $token] = explode(' ', $headers['Authorization'], 2);
-        if (strcasecmp($type, 'Bearer') !== 0 || empty($token)) {
-            return false;
-        }
-
-        return $this->validateToken($token);
-    }
 
     public function user($user_id)
     {
@@ -170,6 +206,16 @@ class Service
             unset($user['password']);
         }
 
-        return $user;
+        if ($user) {
+            return Response::json([
+                'success' => true,
+                'user' => $user
+            ]);
+        } else {
+            return Response::json([
+                'success' => false,
+                'message' => 'User not found.'
+            ], 404);
+        }
     }
 }

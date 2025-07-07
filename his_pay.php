@@ -106,10 +106,10 @@ include 'include/header_student.php';
 
 <body>
     <div class="container">
-        <div class="title mt-4 mb-3 text-center">
-            <h3 style="font-weight: bold; text-align: left;">ការបង់ថ្លៃស្នាក់នៅ</h3>
+        <div class="title mt-4 mb-3 text-left">
+            <p class="h4" style="font-weight: bold;">ការបង់ថ្លៃស្នាក់នៅ</p>
         </div>
-        <div class="table-responsive">
+        <div class="table-responsive p-3">
             <table class="table table-bordered">
                 <thead>
                     <tr>
@@ -231,7 +231,7 @@ include 'include/header_student.php';
                                                     if ($imgResult && $imgRow = $imgResult->fetch_assoc()) {
                                                         $paymentImage = $imgRow['image'] ?? null;
                                                         if ($paymentImage) {
-                                                            $paymentImage = 'http://localhost/dorm_ksit/uploads/images_qr/' . $paymentImage; // Assuming images are stored in 'uploads' directory
+                                                            $paymentImage = './uploads/images_qr/' . $paymentImage; // Assuming images are stored in 'uploads' directory
                                                         }
                                                     }
                                                 }

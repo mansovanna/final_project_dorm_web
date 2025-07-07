@@ -10,36 +10,23 @@ $service = new Providers\Service($conn);
 // Include database connection
 
 // Request user profile
+$apiHeader->setHeaders();
 // check method
 $apiHeader->checkMethod('GET');
 
 // validate token
 // Check for Authorization header
-$headers = getallheaders();
-// check authorization
-$apiHeader->checkAuthorization();
+// $headers = getallheaders();
+// // check authorization
+// $token = $apiHeader->checkAuthorization();
 
 
 
-$token = $apiHeader->validateToken($headers['Authorization']);
+// $token = $apiHeader->validateToken($headers['Authorization']);
 
 // If all checks pass, return user profile
 
-$result =$service->getUser();
+ $result =$service->getUser();
 
-if(!$result){
-    Response::json(
-        [
-            'status'=> 401,
-            "message" => 'Token Expirces'
-        ],
-        401
-    );
-}else {
-    $user = $service->user($result['user_id']);
-    Response::json([
-        'status' => 200,
-        'message' =>"User Request success!",
-        'user' => $user,
-    ]);
-}
+
+echo json_encode([$result]);

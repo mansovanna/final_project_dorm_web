@@ -3,8 +3,8 @@
 use Providers\ApiHeader;
 // use Providers\Response;
 
-require_once __DIR__ . './../providers/Headers.php';
-require_once __DIR__ . './../providers/Providers.php';
+require_once  './../providers/Headers.php';
+
 
 $header = new ApiHeader();
 $header->setHeaders();

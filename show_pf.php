@@ -1,202 +1,156 @@
-
 <?php
 session_start();
 
-// Check if user is logged in
 if (!isset($_SESSION['user_id'])) {
-    header("Location: login.php"); // Redirect to login page if not logged in
+    header("Location: login.php");
     exit();
 }
 
-// Include database connection
 include 'conn_db.php';
 
-// Retrieve user data from session
 $user_id = $_SESSION['user_id'];
 
-// Query to get user's profile information
 $query = "SELECT * FROM register WHERE student_id = ?";
 $stmt = $conn->prepare($query);
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
 $result = $stmt->get_result();
 
-// Check if user exists
 if ($result->num_rows === 1) {
     $user = $result->fetch_assoc();
 } else {
     echo "User not found.";
     exit();
 }
-
-include('include/header_student.php');
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="km">
+
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Profile</title>
-	<link rel="stylesheet" type="text/css" href="./css/bootstrap.min.css">
-	<link rel="stylesheet" type="text/css" href="./css/bootstrap-icons.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ព័ត៌មានផ្ទាល់ខ្លួន</title>
+    <link rel="stylesheet" href="./css/bootstrap.min.css">
+    <link rel="stylesheet" href="./css/bootstrap-icons.css">
     <link href="https://fonts.googleapis.com/css2?family=Hanuman:wght@900&family=Koulen&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
     <style>
-        .shadow-lg {
-            box-shadow: 0 0rem 0 !important;
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
         }
-        /* .edit .btn-primary{
-            position: relative;
-            right: 37%;
-            top: -66%;
-        } */
-        .col-lg-8{
-			margin-bottom: 50px;
-		}
+
+        .wrapper {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        main {
+            flex: 1;
+        }
+
+        .profile-img {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+        }
     </style>
 </head>
+
 <body>
-<div class="row col-lg-8 border rounded mx-auto mt-5 p-2 shadow-lg">
-    <div class="col-md-4 text-center">
-        <?php if (!empty($user['img'])): ?>
-            <img src="<?php echo $user['img']; ?>" class="img-fluid rounded" style="width: 160px; height: 200px; object-fit: cover;">
-        <?php else: ?>
-            <img src="img/user1.png" class="img-fluid rounded" style="width: 180px; height: 180px; object-fit: cover;">
-        <?php endif; ?>
-        <div class="col-12 mt-3 d-flex justify-content-end edit" style=" margin-bottom: 15px; margin-left: -55px;">
-            <a class="btn btn-primary me-2 btn-sm" href="edit_pf.php">កែប្រែប្រវត្តិរូប</a>
-            <button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#changePasswordModal">
-                ប្តូរពាក្យសម្ងាត់
-            </button>
-        </div>
-    </div>
-    <div class="col-md-8">
-        <div class="h3">ព័ត៌មានផ្ទាល់ខ្លួន</div>
-        <table class="table table-striped">
-            <tr><th colspan="2">ព័ត៌មានលម្អិត:</th></tr>
-            <tr><th><i class=""></i> លេខសម្គាល់និស្សិត</th><td><?php echo $user['student_id']; ?></td></tr>
-            <tr><th><i class=""></i> នាមត្រកូល នាមខ្លួន</th><td><?php echo $user['lastname']; ?> <?php echo $user['name']; ?></td></tr>
-            <tr><th><i class=""></i> អក្សរឡាតាំង</th><td><?php echo $user['username']; ?></td></tr>
-            <tr><th><i class=""></i> ភេទ</th><td><?php echo $user['gender']; ?></td></tr>
-            <tr><th><i class=""></i> ថ្ងៃខែឆ្នាំកំណើត</th><td><?php echo $user['dob']; ?></td></tr>
-            <tr><th><i class=""></i> អាសយដ្ឋាន</th><td><?php echo $user['address']; ?></td></tr>
-            <tr><th><i class=""></i> លេខទូរស័ព្ទនិស្សិត</th><td><?php echo $user['phone_student']; ?></td></tr>
-            <tr><th><i class=""></i> លេខទូរស័ព្ទអាណាព្យាបាល</th><td><?php echo $user['phone_parent']; ?></td></tr>
-            <tr><th><i class=""></i> ជំនាញ</th><td><?php echo $user['skill']; ?></td></tr>
-            <tr><th><i class=""></i> កម្រិតសិក្សា</th><td><?php echo $user['education_level']; ?></td></tr>
-            <tr><th><i class=""></i> ឆ្នាំសិក្សា</th><td><?php echo $user['year']; ?></td></tr>
-            <tr><th><i class=""></i> ថ្ងៃខែឆ្នាំចូលស្នាក់នៅ</th><td><?php echo $user['stay']; ?></td></tr>
-            <tr><th><i class=""></i> អគារស្នាក់នៅ</th><td><?php echo $user['building']; ?></td></tr>
-            <tr><th><i class=""></i> បន្ទប់លេខ</th><td><?php echo $user['room']; ?></td></tr>
-        </table>
-    </div>
-</div>
+    <div class="wrapper">
+        <?php include('include/header_student.php'); ?>
 
- <!-- Change Password Modal -->
- <div class="modal fade" id="changePasswordModal" tabindex="-1" role="dialog" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="changePasswordModalLabel">ប្តូរពាក្យសម្ងាត់</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-                </button>
+        <!-- Main Content -->
+        <main class="container mt-5">
+            <div class="row justify-content-center">
+                <div class="border rounded p-3 shadow-lg bg-white">
+                    <div class="row p-3">
+                        <!-- Profile Image & Actions -->
+                        <div class="col-md-4 text-center">
+                            <img src="<?= $user['img'] ?: 'img/user1.png' ?>" alt="Profile"
+                                 class="img-thumbnail rounded-circle shadow-sm mb-3 profile-img">
+                            <div class="d-flex justify-content-center gap-2">
+                                <a href="edit_pf.php" class="btn btn-outline-primary btn-sm">
+                                    <i class="bi bi-pencil-square me-1"></i> កែប្រវត្តិរូប
+                                </a>
+                                <button type="button" class="btn btn-outline-warning btn-sm" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
+                                    <i class="bi bi-key me-1"></i> ប្តូរពាក្យសម្ងាត់
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Profile Info Table -->
+                        <div class="col-md-8">
+                            <h5 class="mb-3 border-bottom pb-2 text-primary fw-bold">
+                                <i class="bi bi-person-lines-fill me-2"></i>ព័ត៌មានផ្ទាល់ខ្លួន
+                            </h5>
+                            <div class="row">
+                                <div class="col-md-6 mb-2"><strong>លេខសម្គាល់និស្សិត:</strong> <?= htmlspecialchars($user['student_id']) ?></div>
+                                <div class="col-md-6 mb-2"><strong>នាមត្រកូល នាមខ្លួន:</strong> <?= htmlspecialchars($user['lastname'] . ' ' . $user['name']) ?></div>
+                                <div class="col-md-6 mb-2"><strong>អក្សរឡាតាំង:</strong> <?= htmlspecialchars($user['username']) ?></div>
+                                <div class="col-md-6 mb-2"><strong>ភេទ:</strong> <?= htmlspecialchars($user['gender']) ?></div>
+                                <div class="col-md-6 mb-2"><strong>ថ្ងៃខែឆ្នាំកំណើត:</strong> <?= htmlspecialchars($user['dob']) ?></div>
+                                <div class="col-md-6 mb-2"><strong>អាសយដ្ឋាន:</strong> <?= htmlspecialchars($user['address']) ?></div>
+                                <div class="col-md-6 mb-2"><strong>លេខទូរស័ព្ទនិស្សិត:</strong> <?= htmlspecialchars($user['phone_student']) ?></div>
+                                <div class="col-md-6 mb-2"><strong>លេខទូរស័ព្ទអាណាព្យាបាល:</strong> <?= htmlspecialchars($user['phone_parent']) ?></div>
+                                <div class="col-md-6 mb-2"><strong>ជំនាញ:</strong> <?= htmlspecialchars($user['skill']) ?></div>
+                                <div class="col-md-6 mb-2"><strong>កម្រិតសិក្សា:</strong> <?= htmlspecialchars($user['education_level']) ?></div>
+                                <div class="col-md-6 mb-2"><strong>ឆ្នាំសិក្សា:</strong> <?= htmlspecialchars($user['year']) ?></div>
+                                <div class="col-md-6 mb-2"><strong>ថ្ងៃចូលស្នាក់នៅ:</strong> <?= htmlspecialchars($user['stay']) ?></div>
+                                <div class="col-md-6 mb-2"><strong>អាគារ:</strong> <?= htmlspecialchars($user['building']) ?></div>
+                                <div class="col-md-6 mb-2"><strong>បន្ទប់:</strong> <?= htmlspecialchars($user['room']) ?></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="modal-body">
-                <form id="changePasswordForm" action="change_password_student.php" method="post">
-                    <div class="form-group">
-                        <label for="current_password">ពាក្យសម្ងាត់បច្ចុប្បន្ន</label>
-                        <div class="input-group">
-                            <input type="password" name="current_password" id="current_password" class="form-control" required>
-                            <div class="input-group-append">
-                                <span class="input-group-text">
-                                    <i class="fa fa-eye" id="toggleCurrentPassword" style="cursor: pointer;"></i>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
+        </main>
 
-                    <div class="form-group">
-                        <label for="new_password">ពាក្យសម្ងាត់ថ្មី</label>
-                        <div class="input-group">
-                            <input type="password" name="new_password" id="new_password" class="form-control" required>
-                            <div class="input-group-append">
-                                <span class="input-group-text">
-                                    <i class="fa fa-eye" id="toggleNewPassword" style="cursor: pointer;"></i>
-                                </span>
-                            </div>
-                        </div>
+        <!-- Modal: Change Password -->
+        <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <form class="modal-content" action="change_password_student.php" method="post">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="changePasswordModalLabel">ប្តូរពាក្យសម្ងាត់</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="user_id" value="<?= htmlspecialchars($user['user_id']) ?>">
 
-                    <div class="form-group">
-                        <label for="confirm_password">បញ្ជាក់ពាក្យសម្ងាត់ថ្មី</label>
-                        <div class="input-group">
-                            <input type="password" name="confirm_password" id="confirm_password" class="form-control" required>
-                            <div class="input-group-append">
-                                <span class="input-group-text">
-                                    <i class="fa fa-eye" id="toggleConfirmPassword" style="cursor: pointer;"></i>
-                                </span>
-                            </div>
+                        <div class="mb-3">
+                            <label for="current_password" class="form-label">ពាក្យសម្ងាត់បច្ចុប្បន្ន</label>
+                            <input type="password" name="current_password" class="form-control" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="new_password" class="form-label">ពាក្យសម្ងាត់ថ្មី</label>
+                            <input type="password" name="new_password" class="form-control" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="confirm_password" class="form-label">បញ្ជាក់ពាក្យសម្ងាត់ថ្មី</label>
+                            <input type="password" name="confirm_password" class="form-control" required>
                         </div>
                     </div>
-                    <input type="hidden" name="user_id" value="<?php echo htmlspecialchars($user['id']); ?>">
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">បោះបង់</button>
-                        <button type="submit" class="btn btn-primary">ប្តូរពាក្យសម្ងាត់</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">បោះបង់</button>
+                        <button type="submit" class="btn btn-primary">ប្តូរ</button>
                     </div>
                 </form>
             </div>
         </div>
+
+        <!-- Footer -->
+        <footer class="bg-light text-center text-muted py-3 mt-auto">
+            <?php include('include/footer.php'); ?>
+        </footer>
     </div>
-</div>
-   
-<script>
-    // Toggle current password visibility
-    document.getElementById('toggleCurrentPassword').addEventListener('click', function() {
-        const passwordField = document.getElementById('current_password');
-        const icon = this;
-        if (passwordField.type === 'password') {
-            passwordField.type = 'text';
-            icon.classList.remove('fa-eye');
-            icon.classList.add('fa-eye-slash');
-        } else {
-            passwordField.type = 'password';
-            icon.classList.remove('fa-eye-slash');
-            icon.classList.add('fa-eye');
-        }
-    });
 
-    // Toggle new password visibility
-    document.getElementById('toggleNewPassword').addEventListener('click', function() {
-        const passwordField = document.getElementById('new_password');
-        const icon = this;
-        if (passwordField.type === 'password') {
-            passwordField.type = 'text';
-            icon.classList.remove('fa-eye');
-            icon.classList.add('fa-eye-slash');
-        } else {
-            passwordField.type = 'password';
-            icon.classList.remove('fa-eye-slash');
-            icon.classList.add('fa-eye');
-        }
-    });
-
-    // Toggle confirm new password visibility
-    document.getElementById('toggleConfirmPassword').addEventListener('click', function() {
-        const passwordField = document.getElementById('confirm_password');
-        const icon = this;
-        if (passwordField.type === 'password') {
-            passwordField.type = 'text';
-            icon.classList.remove('fa-eye');
-            icon.classList.add('fa-eye-slash');
-        } else {
-            passwordField.type = 'password';
-            icon.classList.remove('fa-eye-slash');
-            icon.classList.add('fa-eye');
-        }
-    });
-</script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
-<?php include('include/footer.php'); ?>

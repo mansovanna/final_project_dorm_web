@@ -21,11 +21,11 @@ include('include/header_student.php');
 </head>
 <body>
     <div class="container">
-        <div class="title text-center">
-            <h3 style="font-weight: bold;">ប្រវត្តិការស្នាក់នៅ</h3>
+        <div class="title text-left">
+            <p  class="h4" style="font-weight: bold;">ប្រវត្តិការស្នាក់នៅ</p>
         </div>
 
-        <div class="table-responsive">
+        <div class="table-responsive p-3">
             <?php
             $history_first = mysqli_query($conn, "SELECT * FROM register WHERE student_id = '" . $_SESSION['user_id'] . "'");
             $history = mysqli_query($conn, "SELECT * FROM history WHERE student_id = '" . $_SESSION['user_id'] . "'");
@@ -33,18 +33,18 @@ include('include/header_student.php');
             if (mysqli_num_rows($history_first) > 0 || mysqli_num_rows($history) > 0) {
                 ?>
                 <table class="table table-striped table-bordered">
-                    <thead class="thead-success">
+                    <thead class="thead-success text-white">
                         <tr>
-                            <th>ល.រ</th>
-                            <th>លេខសម្គាល់និស្សិត</th>
-                            <th colspan="2">ឈ្មោះនិស្សិត</th>
-                            <th>ជំនាញ</th>
-                            <th>កម្រិតសិក្សា</th>
-                            <th>ឆ្នាំ</th>
-                            <th>ថ្ងៃចូលស្នាក់នៅ</th>
-                            <th>អគារ</th>
-                            <th>លេខបន្ទប់</th>
-                            <th>លេខទូរស័ព្ទ</th>
+                            <th class="text-white">ល.រ</th>
+                            <th class="text-white">លេខសម្គាល់និស្សិត</th>
+                            <th class="text-white" colspan="2">ឈ្មោះនិស្សិត</th>
+                            <th class="text-white">ជំនាញ</th>
+                            <th class="text-white">កម្រិតសិក្សា</th>
+                            <th class="text-white">ឆ្នាំ</th>
+                            <th class="text-white">ថ្ងៃចូលស្នាក់នៅ</th>
+                            <th class="text-white">អគារ</th>
+                            <th class="text-white">លេខបន្ទប់</th>
+                            <th class="text-white">លេខទូរស័ព្ទ</th>
                         </tr>
                     </thead>
                     <tbody>

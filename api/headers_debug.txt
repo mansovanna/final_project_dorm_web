@@ -1,0 +1,9 @@
+{
+    "user-agent": "Dart\/3.7 (dart:io)",
+    "accept": "application\/json",
+    "accept-encoding": "gzip",
+    "host": "10.23.52.82",
+    "authorization": "Bearer 23b1f138fcae90deb215c1187abd9f1b88b00d81d0d4f54c4250babf11b561a4",
+    "content-type": "application\/json",
+    "Authorization": "Bearer 23b1f138fcae90deb215c1187abd9f1b88b00d81d0d4f54c4250babf11b561a4"
+}

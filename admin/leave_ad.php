@@ -16,7 +16,7 @@ if ($conn->connect_error) {
 // Handle status update via AJAX
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['status']) && isset($_POST['user_id'])) {
     $user_id = $conn->real_escape_string($_POST['user_id']);
-    $newStatus = ($_POST['status'] == 'អនុញ្ញាត') ? 'អនុញ្ញាត' : 'មិនអនុញ្ញាត';
+    $newStatus = ($_POST['status'] == 'approved') ? 'approved' : 'rejected';
 
     // Update the status in the database
     $sql = "UPDATE reques_alaw SET status = '$newStatus' WHERE user_id = '$user_id'";
@@ -35,7 +35,7 @@ $end_date = isset($_GET['end_date']) ? $conn->real_escape_string($_GET['end_date
 $student_id = isset($_GET['student_id']) ? $conn->real_escape_string($_GET['student_id']) : '';
 
 // Build the SQL query with search parameters
-$conditions = ["status = 'រង់ចាំ'"];
+$conditions = ["status = 'pending'"];
 if ($first_date && $end_date) {
     $conditions[] = "(first_date <= '$end_date' AND end_date >= '$first_date')";
 }
@@ -132,13 +132,13 @@ $result = $conn->query($sql_select);
                             <td><?= $row['end_date']; ?></td>
                             <td><?= $row['reason']; ?></td>
                             <td>
-                                <?php if ($row['status'] == 'អនុញ្ញាត') { ?>
+                                <?php if ($row['status'] == 'approved') { ?>
                                     <button class='btn btn-success' disabled>បានអនុញ្ញាត</button>
-                                <?php } elseif ($row['status'] == 'មិនអនុញ្ញាត') { ?>
+                                <?php } elseif ($row['status'] == 'rejected') { ?>
                                     <button class='btn btn-danger' disabled>មិនអនុញ្ញាត</button>
                                 <?php } else { ?>
-                                    <button class='btn btn-success' onclick="updateStatus('<?= $row['user_id'] ?>', 'អនុញ្ញាត')"><i class="fa-solid fa-circle-check"></i></button>
-                                    <button class='btn btn-danger' onclick="updateStatus('<?= $row['user_id'] ?>', 'មិនអនុញ្ញាត')"><i class="fa-solid fa-rectangle-xmark"></i></button>
+                                    <button class='btn btn-success' onclick="updateStatus('<?= $row['user_id'] ?>', 'approved')"><i class="fa-solid fa-circle-check"></i></button>
+                                    <button class='btn btn-danger' onclick="updateStatus('<?= $row['user_id'] ?>', 'rejected')"><i class="fa-solid fa-rectangle-xmark"></i></button>
                                 <?php } ?>
                                 <a href="his_leav.php?student_id=<?= $row['student_id'] ?>" class="btn btn-info"><i class="fa-regular fa-eye"></i></a>
                             </td>
