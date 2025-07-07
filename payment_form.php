@@ -184,11 +184,11 @@ include 'include/header_student.php';
                             <?php foreach ($qr_code_bank as $index => $qr_bank): ?>
                                 <div class="qr-wrapper <?= $index === 0 ? '' : 'd-none' ?>" data-index="<?= $index ?>"
                                     data-bank="<?= htmlspecialchars($qr_bank[1]) ?>">
-                                    <img src="http://localhost/dorm_ksit/uploads/images_qr/<?= htmlspecialchars($qr_bank[2]) ?>"
+                                    <img src="./uploads/images_qr/<?= htmlspecialchars($qr_bank[2]) ?>"
                                         alt="QR code for <?= htmlspecialchars($qr_bank[1]) ?>" class="img-fluid mb-3"
                                         style="max-width: 300px;">
                                     <br>
-                                    <a href="http://localhost/dorm_ksit/uploads/images_qr/<?= htmlspecialchars($qr_bank[2]) ?>"
+                                    <a href="./uploads/images_qr/<?= htmlspecialchars($qr_bank[2]) ?>"
                                        download="<?= htmlspecialchars($qr_bank[2]) ?>"
                                        class="btn btn-outline-info btn-sm mt-2">
                                         ទាញយករូបភាព

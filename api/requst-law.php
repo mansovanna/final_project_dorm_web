@@ -18,17 +18,17 @@ $service = new Providers\Service($conn);
 // check method
 $apiHeader->checkMethod('POST');
 
-// validate token
-// Check for Authorization header
-$headers = getallheaders();
-// check authorization
-$apiHeader->checkAuthorization();
+// // validate token
+// // Check for Authorization header
+// $headers = getallheaders();
+// // check authorization
+// $apiHeader->checkAuthorization();
 
 
 
-$token = $apiHeader->validateToken($headers['Authorization']);
+// $token = $apiHeader->validateToken($headers['Authorization']);
 
-// If all checks pass, return user profile
+// // If all checks pass, return user profile
 
 $result = $service->getUser();
 
@@ -43,7 +43,7 @@ if (!$result) {
     exit;
 }
 
-$user = $service->user($result['user_id']);
+// $user = $service->user($result['user_id']);
 
 
 
@@ -59,8 +59,8 @@ if (empty($input)) {
 }
 
 // Parse input
-$student_id = $input['student_id'] ?? $user['student_id'];
-$user_name = $input['user_name'] ?? $user['lastname'] . " " . $user['name'];
+$student_id = $input['student_id'] ?? $result['student_id'];
+$user_name = $input['user_name'] ?? $result['username'];
 $sumday = $input['sumday'] ?? 0;
 $first_date = $input['first_date'] ?? null;
 $end_date = $input['end_date'] ?? null;

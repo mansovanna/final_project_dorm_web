@@ -39,12 +39,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         die("Failed to upload image.");
     }
 
+    // $stay = cunrrent date
+    $stay = date('Y-m-d H:i:s');
     // Insert data into database
-    $sql = "INSERT INTO register (student_id, password, lastname, name, username, gender, dob, address, phone_student, phone_parent, skill, education_level, year, img, status) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO register (student_id, password, lastname, name, username, gender, dob, address, phone_student, phone_parent, skill, education_level, year, img, status, stay) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("sssssssssssssss", $student_id, $hashed_password, $lastname, $name, $username, $gender, $dob, $address, $phone_student, $phone_parent, $skill, $education_level, $year, $img_path, $status);
+    $stmt->bind_param("ssssssssssssssss", $student_id, $hashed_password, $lastname, $name, $username, $gender, $dob, $address, $phone_student, $phone_parent, $skill, $education_level, $year, $img_path, $status, $stay);
 
     if ($stmt->execute()) {
         // Redirect to a success page or show a success message

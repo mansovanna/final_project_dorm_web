@@ -12,19 +12,7 @@ $service = new Providers\Service($conn);
 
 // Request user profile
 // check method
-$apiHeader->checkMethod('GET');
 
-// validate token
-// Check for Authorization header
-$headers = getallheaders();
-// check authorization
-$apiHeader->checkAuthorization();
-
-
-
-$token = $apiHeader->validateToken($headers['Authorization']);
-
-// If all checks pass, return user profile
 
 $result = $service->getUser();
 
@@ -38,43 +26,55 @@ if (!$result) {
     );
     exit;
 }
+$apiHeader->checkMethod('GET');
 
-$user = $service->user($result['user_id']);
-// Get client input
-$input = json_decode(file_get_contents('php://input'), true);
-
-
-$id_law = $_GET['id']?? null;
+$id_law = $_GET['id'] ?? null;
+$status = isset($_GET['status']) ? trim($_GET['status']) : null;
 
 
 if ($id_law) {
     $select_history = "SELECT * FROM reques_alaw WHERE student_id = ? AND user_id = ?";
     $stmt = $conn->prepare($select_history);
-    $stmt->bind_param("ss", $user['student_id'], $id_law);
-} else {
-    $select_history = "SELECT * FROM reques_alaw WHERE student_id = ?";
+    $stmt->bind_param("ss", $result['student_id'], $id_law);
+} else if($status !== null && $status !== '') {
+     $select_history = "SELECT * FROM reques_alaw WHERE student_id = ? AND status = ?";
     $stmt = $conn->prepare($select_history);
-    $stmt->bind_param("s", $user['student_id']);
+    $stmt->bind_param("ss", $result['student_id'], $status);
+}else {
+$select_history = "SELECT * FROM reques_alaw WHERE student_id = ? ORDER BY re_date DESC";
+    $stmt = $conn->prepare($select_history);
+    $stmt->bind_param("s", $result['student_id']);
 }
 $stmt->execute();
-$result = $stmt->get_result();
-if ($result->num_rows === 0) {
-    echo json_encode(['success' => true, 'message' => 'No history found']);
+$results = $stmt->get_result();
+if ($results->num_rows === 0) {
+    $history = [];
+    Response::json(
+        [
+            'success' => true,
+            'message' => 'No history found for the user',
+            'history' => $history
+        ]
+    );
     exit;
 }
-$history = $result->fetch_all(MYSQLI_ASSOC);
+$history = $results->fetch_all(MYSQLI_ASSOC);
 
 
 
 // Prepare user profile data
 echo Response::json(
     [
-        // 'success' => true,
+        'success' => true,
         // 'message' => 'User profile and history retrieved successfully',
         // 'user' => $user,
         'history' => $history
     ]
 );
+
+
+
+
 // Close the statement and connection
 $stmt->close();
 $conn->close();
