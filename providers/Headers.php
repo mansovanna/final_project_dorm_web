@@ -2,7 +2,7 @@
 
 namespace Providers;
 
-use Response;
+// use Response;
 
 class ApiHeader
 {
@@ -58,5 +58,4 @@ class ApiHeader
         }
         return $token;
     }
-
 }

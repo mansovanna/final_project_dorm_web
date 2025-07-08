@@ -36,3 +36,36 @@ RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 RewriteEngine On
 RewriteCond %{HTTP:Authorization} ^(.*)
 RewriteRule .* - [E=HTTP_AUTHORIZATION:%1]
+
+
+
+
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+
+    # ✅ Route all requests to index.php if not actual file or directory
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^ index.php [L]
+
+    # ✅ Remove .php from URLs (e.g., /login → login.php)
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME}\.php -f
+    RewriteRule ^(.*)$ $1.php [L]
+
+    # ✅ Forward Authorization headers (for Bearer tokens)
+    RewriteCond %{HTTP:Authorization} ^(.*)
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%1]
+</IfModule>
+
+<IfModule mod_headers.c>
+    # ✅ Skip LocalToNet warning
+    Header set localtonet-skip-warning "true"
+</IfModule>
+
+# ✅ Block access to sensitive files
+<FilesMatch "\.(env|log|ini|json|sql|zip|tar|gz|yml|yaml|htaccess)$">
+    Require all denied
+</FilesMatch>
