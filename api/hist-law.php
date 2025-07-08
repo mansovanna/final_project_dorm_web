@@ -41,14 +41,21 @@ if ($id_law) {
     $stmt = $conn->prepare($select_history);
     $stmt->bind_param("ss", $result['student_id'], $status);
 }else {
-    $select_history = "SELECT * FROM reques_alaw WHERE student_id = ?";
+$select_history = "SELECT * FROM reques_alaw WHERE student_id = ? ORDER BY re_date DESC";
     $stmt = $conn->prepare($select_history);
     $stmt->bind_param("s", $result['student_id']);
 }
 $stmt->execute();
 $results = $stmt->get_result();
 if ($results->num_rows === 0) {
-    echo json_encode(['success' => true, 'message' => 'No history found']);
+    $history = [];
+    Response::json(
+        [
+            'success' => true,
+            'message' => 'No history found for the user',
+            'history' => $history
+        ]
+    );
     exit;
 }
 $history = $results->fetch_all(MYSQLI_ASSOC);

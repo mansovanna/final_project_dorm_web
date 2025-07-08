@@ -6,27 +6,17 @@ require_once __DIR__ . '/../providers/Response.php';
 
 $apiHeader = new Providers\ApiHeader();
 $apiHeader->setHeaders();
-$service = new Providers\Service($conn);
-// Include database connection
-
-// Request user profile
-$apiHeader->setHeaders();
-// check method
 $apiHeader->checkMethod('GET');
+// Check if the user is authorized
+// This will check for the Authorization header and validate the token
+$token = $apiHeader->checkAuthorization();
+if (!$token || !$apiHeader->validateToken($token)) {
+    http_response_code(401);
+    echo json_encode(['error' => 'Invalid or expired token']);
+    exit;
+}
 
-// validate token
-// Check for Authorization header
-// $headers = getallheaders();
-// // check authorization
-// $token = $apiHeader->checkAuthorization();
+$service = new Providers\Service($conn);
+$result = $service->getUser();
 
-
-
-// $token = $apiHeader->validateToken($headers['Authorization']);
-
-// If all checks pass, return user profile
-
- $result =$service->getUser();
-
-
-echo json_encode([$result]);
+echo json_encode($result);

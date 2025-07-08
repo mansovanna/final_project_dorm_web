@@ -2,7 +2,7 @@
 
 namespace Providers;
 
-// use Response;
+use Response;
 
 class ApiHeader
 {

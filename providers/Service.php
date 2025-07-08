@@ -155,17 +155,11 @@ class Service
     public function validateToken($token)
     {
         $query = "
-            SELECT 
-                tokens.token,
-                tokens.expires_at,
-                register.user_id,
-                register.student_id,
-                register.username,
-                register.img
-            FROM tokens
-            JOIN register ON tokens.user_id = register.user_id
-            WHERE tokens.token = ? AND tokens.expires_at >= NOW()
-        ";
+            SELECT *
+                FROM tokens
+                JOIN register ON tokens.user_id = register.user_id
+                WHERE tokens.token = ? AND tokens.expires_at >= NOW()
+                ";
 
         $stmt = $this->conn->prepare($query);
 
@@ -182,8 +176,15 @@ class Service
         $result = $stmt->get_result();
 
         if ($result && $result->num_rows === 1) {
-            return $result->fetch_assoc();
+            // Remove password from result if present
+            $row = $result->fetch_assoc();
+            if (isset($row['password'])) {
+                unset($row['password']);
+                unset($row['token']);
+            }
+            return  $row;
         }
+
 
         return Response::json([
             'status' => 401,
